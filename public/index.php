@@ -3,6 +3,8 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 use Slim\Routing\RouteCollectorProxy;
+use Longman\TelegramBot\Telegram;
+use Longman\TelegramBot\Entities\Update;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -18,18 +20,12 @@ $app->get('/', function (Request $request, Response $response, $args) {
     return $response;
 });
 
-$app->get('/test_config', function (Request $request, Response $response, $args) use ($config) {
-    $response->getBody()->write(json_encode($config));
-
-    return $response;
-});
-
 # php-telegram-bot
 $app->group('/webhook', function(RouteCollectorProxy $group) use ($config) {
     $group->get('/set', function (Request $request, Response $response, $args) use ($config) {
         try {
             // Create Telegram API object
-            $telegram = new Longman\TelegramBot\Telegram($config['bot_api_key'], $config['bot_username']);
+            $telegram = new Telegram($config['bot_api_key'], $config['bot_username']);
 
             // Set webhook
             $result = $telegram->setWebhook($config['webhook']['url'] . '/webhook/hook');
@@ -48,10 +44,20 @@ $app->group('/webhook', function(RouteCollectorProxy $group) use ($config) {
     $group->post('/hook', function (Request $request, Response $response, $args) use ($config) {
         try {
             // Create Telegram API object
-            $telegram = new Longman\TelegramBot\Telegram($config['bot_api_key'], $config['bot_username']);
+            $telegram = new Telegram($config['bot_api_key'], $config['bot_username']);
 
             // Add commands paths containing your custom commands
             $telegram->addCommandsPaths($config['commands']['paths']);
+
+            $telegram->setUpdateFilter(function (Update $update, Telegram $telegram, &$reason = 'Update denied by update_filter') use ($config) {
+                $user_id = $update->getMessage()->getFrom()->getId();
+                if ($user_id === $config['bot_allowed_id']) {
+                    return true;
+                }
+
+                $reason = "Invalid user with ID {$user_id}";
+                return false;
+            });
 
             // Handle telegram webhook request
             $telegram->handle();
