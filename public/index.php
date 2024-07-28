@@ -50,6 +50,9 @@ $app->group('/webhook', function(RouteCollectorProxy $group) use ($config) {
             // Create Telegram API object
             $telegram = new Longman\TelegramBot\Telegram($config['bot_api_key'], $config['bot_username']);
 
+            // Add commands paths containing your custom commands
+            $telegram->addCommandsPaths($config['commands']['paths']);
+
             // Handle telegram webhook request
             $telegram->handle();
 

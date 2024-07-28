@@ -16,5 +16,11 @@ return [
 
     'webhook' => [
         'url' => $_ENV['APP_URL'],
-    ]
+    ],
+
+    'commands' => [
+        'paths' => [
+            __DIR__ . '/commands',
+        ],
+    ],
 ];
