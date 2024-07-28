@@ -29,6 +29,7 @@ jobs:
           echo "GCLOUD_SERVICE_NAME=viernes-bot" >> "$GITHUB_ENV"
           echo "APP_URL=${{ secrets.APP_URL }}" >> "$GITHUB_ENV"
           echo "BOT_API_KEY=${{ secrets.BOT_API_KEY }}" >> "$GITHUB_ENV"
+          echo "BOT_ALLOWED_ID=${{ secrets.BOT_ALLOWED_ID }}" >> "$GITHUB_ENV"
 
       - name: Set execute permission for scripts and execute
         run: |

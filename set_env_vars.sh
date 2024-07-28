@@ -17,6 +17,7 @@ add_env_var() {
 # Agrega las variables de entorno
 add_env_var APP_URL "$APP_URL"
 add_env_var BOT_API_KEY "$BOT_API_KEY"
+add_env_var BOT_ALLOWED_ID "$BOT_ALLOWED_ID"
 
 # Reemplaza el archivo de configuración original con la versión modificada
 mv $TEMP_FILE $CONFIG_FILE
