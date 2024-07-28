@@ -41,7 +41,6 @@ $app->group('/webhook', function(RouteCollectorProxy $group) use ($config) {
         } catch (Longman\TelegramBot\Exception\TelegramException $e) {
             $response->getBody()->write($e->getMessage());
 
-            // log telegram errors
             return $response;
         }
     });
@@ -53,10 +52,13 @@ $app->group('/webhook', function(RouteCollectorProxy $group) use ($config) {
 
             // Handle telegram webhook request
             $telegram->handle();
+
+            $response->getBody()->write('ok');
+            return $response;
         } catch (Longman\TelegramBot\Exception\TelegramException $e) {
-            // Silence is golden!
-            // log telegram errors
-            echo $e->getMessage();
+            $response->getBody()->write($e->getMessage());
+
+            return $response;
         }
     });
 
