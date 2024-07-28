@@ -32,8 +32,8 @@ jobs:
 
       - name: Set execute permission for scripts and execute
         run: |
-          chmod +x ./set-env-vars.sh
-          ./set-env-vars.sh
+          chmod +x ./set_env_vars.sh
+          ./set_env_vars.sh
 
       - name: 'Deploy to App Engine'
         run: |
