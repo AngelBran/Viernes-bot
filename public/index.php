@@ -32,7 +32,7 @@ $app->group('/webhook', function(RouteCollectorProxy $group) use ($config) {
             $telegram = new Longman\TelegramBot\Telegram($config['bot_api_key'], $config['bot_username']);
 
             // Set webhook
-            $result = $telegram->setWebhook($config['webhook']['url']);
+            $result = $telegram->setWebhook($config['webhook']['url'] . '/webhook/hook');
             if ($result->isOk()) {
                 $response->getBody()->write($result->getDescription());
 
@@ -46,7 +46,7 @@ $app->group('/webhook', function(RouteCollectorProxy $group) use ($config) {
         }
     });
 
-    $group->get('/hook', function (Request $request, Response $response, $args) use ($config) {
+    $group->post('/hook', function (Request $request, Response $response, $args) use ($config) {
         try {
             // Create Telegram API object
             $telegram = new Longman\TelegramBot\Telegram($config['bot_api_key'], $config['bot_username']);
