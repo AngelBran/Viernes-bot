@@ -27,6 +27,16 @@ $app->group('/webhook', function(RouteCollectorProxy $group) use ($config) {
             // Create Telegram API object
             $telegram = new Telegram($config['bot_api_key'], $config['bot_username']);
 
+            $telegram->setUpdateFilter(function (Update $update, Telegram $telegram, &$reason = 'Update denied by update_filter') use ($config) {
+                $user_id = $update->getMessage()->getFrom()->getId();
+                if ($user_id === $config['bot_allowed_id']) {
+                    return true;
+                }
+
+                $reason = "Invalid user with ID {$user_id}";
+                return false;
+            });
+
             // Set webhook
             $result = $telegram->setWebhook($config['webhook']['url'] . '/webhook/hook');
             if ($result->isOk()) {
@@ -48,16 +58,6 @@ $app->group('/webhook', function(RouteCollectorProxy $group) use ($config) {
 
             // Add commands paths containing your custom commands
             $telegram->addCommandsPaths($config['commands']['paths']);
-
-            $telegram->setUpdateFilter(function (Update $update, Telegram $telegram, &$reason = 'Update denied by update_filter') use ($config) {
-                $user_id = $update->getMessage()->getFrom()->getId();
-                if ($user_id === $config['bot_allowed_id']) {
-                    return true;
-                }
-
-                $reason = "Invalid user with ID {$user_id}";
-                return false;
-            });
 
             // Handle telegram webhook request
             $telegram->handle();
