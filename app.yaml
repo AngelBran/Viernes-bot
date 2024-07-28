@@ -12,4 +12,4 @@ handlers:
 
 env_variables:
   APP_ENV: production
-  BOT_USERNAME: "Victoria Bot"
+  BOT_USERNAME: viernesrobot
