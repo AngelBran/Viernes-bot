@@ -5,6 +5,8 @@
         "slim/psr7": "^1.7",
         "nyholm/psr7": "^1.8",
         "nyholm/psr7-server": "^1.1",
-        "guzzlehttp/psr7": "2"
+        "guzzlehttp/psr7": "2",
+        "longman/telegram-bot": "^0.83.1",
+        "vlucas/phpdotenv": "^5.6"
     }
 }

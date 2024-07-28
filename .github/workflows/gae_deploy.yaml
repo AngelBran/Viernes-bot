@@ -1,0 +1,42 @@
+name: GAE Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Authenticate with Google Cloud
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      - name: Set environment variables
+        run: |
+          echo "GCLOUD_SERVICE_NAME=viernes-bot" >> "$GITHUB_ENV"
+          echo "APP_URL=${{ secrets.APP_URL }}" >> "$GITHUB_ENV"
+          echo "BOT_API_KEY=${{ secrets.BOT_API_KEY }}" >> "$GITHUB_ENV"
+
+      - name: Set execute permission for scripts and execute
+        run: |
+          chmod +x ./set-env-vars.sh
+          ./set-env-vars.sh
+
+      - name: 'Deploy to App Engine'
+        run: |
+          gcloud app deploy
+
+      - name: 'Delete old versions'
+        run: gcloud app versions list --service=$GCLOUD_SERVICE_NAME --format="value(version.id)" --sort-by="~version.createTime" | tail -n +4 | xargs -r gcloud app versions delete --quiet
