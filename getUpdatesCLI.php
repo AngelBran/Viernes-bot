@@ -23,13 +23,14 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 // Load all configuration options
 /** @var array $config */
-$config = require __DIR__ . '/config.php';
+$config = require __DIR__ . '/config/config.php';
 
 try {
     // Create Telegram API object
     $telegram = new Telegram($config['bot_api_key'], $config['bot_username']);
 
-    $telegram->useGetUpdatesWithoutDatabase();
+    // Enable MySQL
+    $telegram->enableMySql($config['mysql']);
 
     // Configure bot commands
     $telegram->addCommandsPaths($config['commands']['paths']);

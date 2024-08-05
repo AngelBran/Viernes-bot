@@ -10,7 +10,7 @@ use Longman\TelegramBot\Exception\TelegramException;
 require __DIR__ . '/../vendor/autoload.php';
 
 // Load all configuration options
-$config = require __DIR__ . '/../config.php';
+$config = require __DIR__ . '/config/config.php';
 
 $app = AppFactory::create();
 
@@ -48,6 +48,9 @@ $app->group('/webhook', function(RouteCollectorProxy $group) use ($config) {
     $group->post('/hook', function (Request $request, Response $response) use ($config) {
         try {
             $telegram = createTelegramInstance($config);
+
+            // Enable MySQL
+            $telegram->enableMySql($config['mysql']);
 
             // Configure bot commands
             $telegram->addCommandsPaths($config['commands']['paths']);
