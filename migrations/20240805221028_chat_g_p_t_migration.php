@@ -15,6 +15,7 @@ final class ChatGPTMigration extends AbstractMigration
             ->addColumn('assistant_id', 'string', ['null' => true])
             ->addColumn('created_at', 'datetime')
             ->addIndex('threads_id', Index::TYPE_UNIQUE)
+            ->addIndex('chat_id', Index::TYPE_UNIQUE)
             ->addForeignKey('chat_id', 'chat', 'id')
             ->create();
     }

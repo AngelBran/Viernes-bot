@@ -3,20 +3,10 @@
 
 use Longman\TelegramBot\Telegram;
 use Longman\TelegramBot\Entities\Update;
-
-/**
- * This file is part of the PHP Telegram Bot example-bot package.
- * https://github.com/php-telegram-bot/example-bot/
- *
- * (c) PHP Telegram Bot Team
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
-/**
- * This file is used to run the bot with the getUpdates method.
- */
+use Longman\TelegramBot\TelegramLog;
+use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 
 // Load composer
 require_once __DIR__ . '/vendor/autoload.php';
@@ -45,6 +35,18 @@ try {
         return false;
     });
 
+    TelegramLog::initialize(
+        // Main logger that handles all 'debug' and 'error' logs.
+        new Logger('telegram_bot', [
+            (new StreamHandler( __DIR__ . '/logs/debug_log_file.txt', Logger::DEBUG))->setFormatter(new LineFormatter(null, null, true)),
+            (new StreamHandler( __DIR__ . '/logs/error_log_file.txt', Logger::ERROR))->setFormatter(new LineFormatter(null, null, true)),
+        ]),
+        // Updates logger for raw updates.
+        new Logger('telegram_bot_updates', [
+            (new StreamHandler( __DIR__ . '/logs/updates_log_file.txt', Logger::INFO))->setFormatter(new LineFormatter('%message%' . PHP_EOL)),
+        ])
+    );
+
     // Handle telegram getUpdates request
     $server_response = $telegram->handleGetUpdates();
 
@@ -61,8 +63,8 @@ try {
     Longman\TelegramBot\TelegramLog::error($e);
 
     // Uncomment this to output any errors (ONLY FOR DEVELOPMENT!)
-    // echo $e;
+    echo $e;
 } catch (Longman\TelegramBot\Exception\TelegramLogException $e) {
     // Uncomment this to output log initialisation errors (ONLY FOR DEVELOPMENT!)
-    // echo $e;
+    echo $e;
 }

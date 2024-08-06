@@ -34,7 +34,7 @@ return [
 
     'chatgpt'           => [
         'endpoint'  => [
-            'url'       => 'https://api.openai.com/v1/assistants',
+            'url'       => 'https://api.openai.com/v1',
             'headers'   => [
                 'Authorization' => 'Bearer ' . $_ENV['CHATGPT_API_KEY'],
                 'OpenAI-Beta'   => 'assistants=v2',
